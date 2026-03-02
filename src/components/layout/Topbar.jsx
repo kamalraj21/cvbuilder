@@ -6,6 +6,7 @@ import { useToast } from '../ui/Toast';
 import { exportJSON, importJSON } from '../../utils/jsonExport';
 import { loadSlot, deleteSlot, getSlotMeta } from '../../utils/storage';
 import { PDFDownloadButton } from '../pdf/PDFDownloadButton';
+import { ImportPDFButton } from '../editor/ImportPDFButton';
 
 export function Topbar() {
   const personalInfo = useCVStore((s) => s.personalInfo);
@@ -81,6 +82,8 @@ export function Topbar() {
 
       {/* Actions */}
       <div className="flex items-center gap-2">
+        <ImportPDFButton />
+
         <Button
           variant="ghost"
           size="sm"

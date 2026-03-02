@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   base: '/cvbuilder/',
   optimizeDeps: {
-    exclude: ['@react-pdf/renderer'],
+    exclude: ['@react-pdf/renderer', 'pdfjs-dist'],
   },
   build: {
     chunkSizeWarningLimit: 2000,

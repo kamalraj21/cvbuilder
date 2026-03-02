@@ -3,32 +3,76 @@ import { SECTION_TYPES } from '../../../constants/sectionTypes';
 import { formatDateRange } from '../../../utils/dateHelpers';
 
 const styles = StyleSheet.create({
-  page: { fontFamily: 'LibreBaskerville', fontSize: 9, paddingHorizontal: 48, paddingVertical: 44, backgroundColor: '#ffffff' },
-  header: { alignItems: 'center', marginBottom: 16 },
-  name: { fontSize: 18, fontWeight: 700, color: '#111827', letterSpacing: 1 },
-  headline: { fontSize: 9, color: '#6b7280', fontStyle: 'italic', marginTop: 2 },
-  contactRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 10, marginTop: 4 },
-  contactText: { fontSize: 8, color: '#6b7280' },
-  section: { marginBottom: 10 },
-  sectionTitle: { fontSize: 8, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, color: '#111827', marginBottom: 2 },
-  sectionLine: { height: 1, backgroundColor: '#374151', marginBottom: 6 },
+  page: {
+    fontFamily: 'LibreBaskerville',
+    fontSize: 10,
+    paddingHorizontal: 52,
+    paddingVertical: 44,
+    backgroundColor: '#ffffff',
+  },
+  header: { alignItems: 'center', marginBottom: 18 },
+  name: { fontSize: 20, fontWeight: 700, color: '#111827', letterSpacing: 1 },
+  headline: { fontSize: 10, color: '#6b7280', fontStyle: 'italic', marginTop: 3 },
+  contactRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginTop: 6,
+  },
+  contactItem: { flexDirection: 'row', alignItems: 'center' },
+  contactText: { fontSize: 8.5, color: '#6b7280' },
+  contactSep: { fontSize: 8.5, color: '#d1d5db', marginHorizontal: 5 },
+  section: { marginBottom: 12 },
+  sectionTitle: {
+    fontSize: 8.5,
+    fontWeight: 700,
+    textTransform: 'uppercase',
+    letterSpacing: 1.2,
+    color: '#111827',
+    marginBottom: 2,
+  },
+  sectionLine: { height: 0.75, backgroundColor: '#374151', marginBottom: 7 },
+  entryBlock: { marginBottom: 8 },
   entryRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 1 },
-  entryCompany: { fontSize: 9, fontWeight: 700, color: '#111827' },
-  entryRole: { fontSize: 9, fontStyle: 'italic', color: '#374151' },
-  entryDate: { fontSize: 8, color: '#6b7280' },
-  bullet: { flexDirection: 'row', marginTop: 1 },
-  bulletDot: { width: 10, fontSize: 8 },
-  bulletText: { flex: 1, fontSize: 8, color: '#374151', lineHeight: 1.4 },
-  skillRow: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 2 },
-  skillLabel: { fontSize: 8, fontWeight: 700 },
-  skillText: { fontSize: 8, color: '#374151' },
+  entryCompany: { fontSize: 10, fontWeight: 700, color: '#111827' },
+  entryRole: { fontSize: 9.5, fontStyle: 'italic', color: '#374151' },
+  entryDate: { fontSize: 8.5, color: '#6b7280' },
+  bullet: { flexDirection: 'row', marginTop: 1.5 },
+  bulletDot: { width: 10, fontSize: 9 },
+  bulletText: { flex: 1, fontSize: 9, color: '#374151', lineHeight: 1.5 },
+  skillRow: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 3 },
+  skillLabel: { fontSize: 9, fontWeight: 700 },
+  skillText: { fontSize: 9, color: '#374151' },
+  summaryText: { fontSize: 9.5, color: '#374151', lineHeight: 1.6 },
 });
 
 function SectionHeader({ title }) {
   return (
-    <View style={styles.section}>
+    <View>
       <Text style={styles.sectionTitle}>{title}</Text>
       <View style={styles.sectionLine} />
+    </View>
+  );
+}
+
+function ContactRow({ personalInfo }) {
+  const items = [
+    personalInfo.email,
+    personalInfo.phone,
+    personalInfo.location,
+    personalInfo.linkedin,
+    personalInfo.github,
+    personalInfo.portfolio,
+  ].filter(Boolean);
+
+  return (
+    <View style={styles.contactRow}>
+      {items.map((v, i) => (
+        <View key={i} style={styles.contactItem}>
+          {i > 0 && <Text style={styles.contactSep}>|</Text>}
+          <Text style={styles.contactText}>{v}</Text>
+        </View>
+      ))}
     </View>
   );
 }
@@ -36,16 +80,17 @@ function SectionHeader({ title }) {
 function ExperienceSection({ section }) {
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{section.title}</Text>
-      <View style={styles.sectionLine} />
+      <SectionHeader title={section.title} />
       {(section.entries || []).map((e) => (
-        <View key={e.id} style={{ marginBottom: 7 }}>
+        <View key={e.id} style={styles.entryBlock} wrap={false}>
           <View style={styles.entryRow}>
-            <Text style={styles.entryCompany}>{e.company}</Text>
-            <Text style={styles.entryDate}>{formatDateRange(e.startMonth, e.startYear, e.endMonth, e.endYear, e.current)}</Text>
+            <Text style={styles.entryCompany}>{e.company || ''}</Text>
+            <Text style={styles.entryDate}>
+              {formatDateRange(e.startMonth, e.startYear, e.endMonth, e.endYear, e.current)}
+            </Text>
           </View>
           <View style={styles.entryRow}>
-            <Text style={styles.entryRole}>{e.role}</Text>
+            <Text style={styles.entryRole}>{e.role || ''}</Text>
             {e.location ? <Text style={styles.entryDate}>{e.location}</Text> : null}
           </View>
           {(e.bullets || []).filter(Boolean).map((b, i) => (
@@ -63,15 +108,19 @@ function ExperienceSection({ section }) {
 function EducationSection({ section }) {
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{section.title}</Text>
-      <View style={styles.sectionLine} />
+      <SectionHeader title={section.title} />
       {(section.entries || []).map((e) => (
-        <View key={e.id} style={{ marginBottom: 5 }}>
+        <View key={e.id} style={{ marginBottom: 6 }} wrap={false}>
           <View style={styles.entryRow}>
-            <Text style={styles.entryCompany}>{e.institution}</Text>
-            {e.graduationYear ? <Text style={styles.entryDate}>{e.graduationYear}</Text> : null}
+            <Text style={styles.entryCompany}>{e.institution || ''}</Text>
+            {e.graduationYear ? (
+              <Text style={styles.entryDate}>{e.graduationYear}</Text>
+            ) : null}
           </View>
-          <Text style={styles.entryRole}>{[e.degree, e.fieldOfStudy].filter(Boolean).join(', ')}</Text>
+          <Text style={styles.entryRole}>
+            {[e.degree, e.fieldOfStudy].filter(Boolean).join(', ')}
+          </Text>
+          {e.gpa ? <Text style={styles.entryDate}>GPA: {e.gpa}</Text> : null}
         </View>
       ))}
     </View>
@@ -81,11 +130,12 @@ function EducationSection({ section }) {
 function SkillsSection({ section }) {
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{section.title}</Text>
-      <View style={styles.sectionLine} />
+      <SectionHeader title={section.title} />
       {(section.groups || []).map((g) => (
         <View key={g.id} style={styles.skillRow}>
-          {g.category ? <Text style={styles.skillLabel}>{g.category}: </Text> : null}
+          {g.category ? (
+            <Text style={styles.skillLabel}>{g.category}: </Text>
+          ) : null}
           <Text style={styles.skillText}>{(g.tags || []).join(' · ')}</Text>
         </View>
       ))}
@@ -96,16 +146,19 @@ function SkillsSection({ section }) {
 function ProjectsSection({ section }) {
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{section.title}</Text>
-      <View style={styles.sectionLine} />
+      <SectionHeader title={section.title} />
       {(section.entries || []).map((e) => (
-        <View key={e.id} style={{ marginBottom: 5 }}>
+        <View key={e.id} style={{ marginBottom: 6 }} wrap={false}>
           <View style={styles.entryRow}>
-            <Text style={styles.entryCompany}>{e.name}</Text>
-            {e.url ? <Text style={{ fontSize: 8, color: '#2563eb' }}>{e.url}</Text> : null}
+            <Text style={styles.entryCompany}>{e.name || ''}</Text>
+            {e.url ? (
+              <Text style={{ fontSize: 8.5, color: '#2563eb' }}>{e.url}</Text>
+            ) : null}
           </View>
           {(e.techStack || []).length > 0 && (
-            <Text style={{ fontSize: 7, color: '#9ca3af', fontStyle: 'italic' }}>{e.techStack.join(', ')}</Text>
+            <Text style={{ fontSize: 8, color: '#9ca3af', fontStyle: 'italic' }}>
+              {e.techStack.join(', ')}
+            </Text>
           )}
           {(e.bullets || []).filter(Boolean).map((b, i) => (
             <View key={i} style={styles.bullet}>
@@ -122,12 +175,13 @@ function ProjectsSection({ section }) {
 function CertsSection({ section }) {
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{section.title}</Text>
-      <View style={styles.sectionLine} />
+      <SectionHeader title={section.title} />
       {(section.entries || []).map((e) => (
-        <View key={e.id} style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2 }}>
-          <Text style={styles.bulletText}>{e.name}{e.issuer ? ` — ${e.issuer}` : ''}</Text>
-          <Text style={styles.entryDate}>{e.date}</Text>
+        <View key={e.id} style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 3 }} wrap={false}>
+          <Text style={styles.bulletText}>
+            {e.name || ''}{e.issuer ? ` — ${e.issuer}` : ''}
+          </Text>
+          <Text style={styles.entryDate}>{e.date || ''}</Text>
         </View>
       ))}
     </View>
@@ -137,39 +191,47 @@ function CertsSection({ section }) {
 function TextSection({ section }) {
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{section.title}</Text>
-      <View style={styles.sectionLine} />
-      <Text style={styles.bulletText}>{section.content}</Text>
+      <SectionHeader title={section.title} />
+      <Text style={styles.summaryText}>{section.content || ''}</Text>
     </View>
   );
 }
 
-export function ClassicPDFTemplate({ personalInfo, sections, accentColor }) {
-  const visibleSections = sections.filter((s) => s.visible);
+export function ClassicPDFTemplate({ personalInfo, sections }) {
+  const visibleSections = (sections || []).filter((s) => s.visible);
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
+        {/* Header */}
         <View style={styles.header}>
-          {personalInfo.fullName ? <Text style={styles.name}>{personalInfo.fullName.toUpperCase()}</Text> : null}
-          {personalInfo.headline ? <Text style={styles.headline}>{personalInfo.headline}</Text> : null}
-          <View style={styles.contactRow}>
-            {[personalInfo.email, personalInfo.phone, personalInfo.location, personalInfo.linkedin, personalInfo.github, personalInfo.portfolio]
-              .filter(Boolean)
-              .map((v, i) => <Text key={i} style={styles.contactText}>{v}</Text>)}
-          </View>
+          {personalInfo.fullName ? (
+            <Text style={styles.name}>{personalInfo.fullName.toUpperCase()}</Text>
+          ) : null}
+          {personalInfo.headline ? (
+            <Text style={styles.headline}>{personalInfo.headline}</Text>
+          ) : null}
+          <ContactRow personalInfo={personalInfo} />
         </View>
+
+        {/* Sections */}
         {visibleSections.map((section) => {
           switch (section.type) {
-            case SECTION_TYPES.EXPERIENCE: return <ExperienceSection key={section.id} section={section} />;
-            case SECTION_TYPES.EDUCATION: return <EducationSection key={section.id} section={section} />;
-            case SECTION_TYPES.SKILLS: return <SkillsSection key={section.id} section={section} />;
-            case SECTION_TYPES.PROJECTS: return <ProjectsSection key={section.id} section={section} />;
-            case SECTION_TYPES.CERTIFICATIONS: return <CertsSection key={section.id} section={section} />;
+            case SECTION_TYPES.EXPERIENCE:
+              return <ExperienceSection key={section.id} section={section} />;
+            case SECTION_TYPES.EDUCATION:
+              return <EducationSection key={section.id} section={section} />;
+            case SECTION_TYPES.SKILLS:
+              return <SkillsSection key={section.id} section={section} />;
+            case SECTION_TYPES.PROJECTS:
+              return <ProjectsSection key={section.id} section={section} />;
+            case SECTION_TYPES.CERTIFICATIONS:
+              return <CertsSection key={section.id} section={section} />;
             case SECTION_TYPES.SUMMARY:
             case SECTION_TYPES.CUSTOM:
               return <TextSection key={section.id} section={section} />;
-            default: return null;
+            default:
+              return null;
           }
         })}
       </Page>

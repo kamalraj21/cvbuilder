@@ -1,19 +1,21 @@
 import { Font } from '@react-pdf/renderer';
 
+const CDN = 'https://cdn.jsdelivr.net/npm/@fontsource';
+
 export function registerFonts() {
   Font.register({
     family: 'Inter',
     fonts: [
       {
-        src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff',
+        src: `${CDN}/inter/files/inter-latin-400-normal.woff2`,
         fontWeight: 400,
       },
       {
-        src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuI6fAZ9hiJ-Ek-_EeA.woff',
+        src: `${CDN}/inter/files/inter-latin-600-normal.woff2`,
         fontWeight: 600,
       },
       {
-        src: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYAZ9hiJ-Ek-_EeA.woff',
+        src: `${CDN}/inter/files/inter-latin-700-normal.woff2`,
         fontWeight: 700,
       },
     ],
@@ -23,11 +25,11 @@ export function registerFonts() {
     family: 'Lato',
     fonts: [
       {
-        src: 'https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXiWtFCc.woff2',
+        src: `${CDN}/lato/files/lato-latin-400-normal.woff2`,
         fontWeight: 400,
       },
       {
-        src: 'https://fonts.gstatic.com/s/lato/v24/S6u9w4BMUTPHh6UVSwiPGQ3q5d0.woff2',
+        src: `${CDN}/lato/files/lato-latin-700-normal.woff2`,
         fontWeight: 700,
       },
     ],
@@ -37,15 +39,15 @@ export function registerFonts() {
     family: 'LibreBaskerville',
     fonts: [
       {
-        src: 'https://fonts.gstatic.com/s/librebaskerville/v14/kmKnZrc3Hgbbcjq75U4uslyuy4kn0qNZaxM.woff2',
+        src: `${CDN}/libre-baskerville/files/libre-baskerville-latin-400-normal.woff2`,
         fontWeight: 400,
       },
       {
-        src: 'https://fonts.gstatic.com/s/librebaskerville/v14/kmKiZrc3Hgbbcjq75U4uslyuy4kn0pNeYRI4CN2V.woff2',
+        src: `${CDN}/libre-baskerville/files/libre-baskerville-latin-700-normal.woff2`,
         fontWeight: 700,
       },
       {
-        src: 'https://fonts.gstatic.com/s/librebaskerville/v14/kmKhZrc3Hgbbcjq75U4uslyuy4kn0qviTjYwI8Gcw6Oi.woff2',
+        src: `${CDN}/libre-baskerville/files/libre-baskerville-latin-400-italic.woff2`,
         fontWeight: 400,
         fontStyle: 'italic',
       },

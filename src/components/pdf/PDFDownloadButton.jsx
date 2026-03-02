@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FileDown, Loader2 } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { useToast } from '../ui/Toast';
 
 let fontsRegistered = false;
 
@@ -29,6 +30,7 @@ async function loadPDFTemplate(template) {
 
 export function PDFDownloadButton({ personalInfo, sections, template, accentColor }) {
   const [loading, setLoading] = useState(false);
+  const toast = useToast();
 
   async function handleDownload() {
     setLoading(true);
@@ -48,10 +50,16 @@ export function PDFDownloadButton({ personalInfo, sections, template, accentColo
       const name = personalInfo.fullName?.replace(/\s+/g, '_') || 'cv';
       a.href = url;
       a.download = `${name}_CV.pdf`;
+      document.body.appendChild(a);
       a.click();
-      URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+      toast('PDF downloaded successfully');
     } catch (err) {
+      // Reset so the next attempt will re-register fonts
+      fontsRegistered = false;
       console.error('PDF generation failed:', err);
+      toast(err.message || 'PDF generation failed', 'error');
     } finally {
       setLoading(false);
     }
