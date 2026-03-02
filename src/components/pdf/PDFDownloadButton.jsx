@@ -2,29 +2,23 @@ import { useState } from 'react';
 import { FileDown, Loader2 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { useToast } from '../ui/Toast';
+import { ClassicPDFTemplate } from './templates/ClassicPDFTemplate.jsx';
+import { ModernPDFTemplate } from './templates/ModernPDFTemplate.jsx';
+import { MinimalPDFTemplate } from './templates/MinimalPDFTemplate.jsx';
+
+const TEMPLATES = {
+  classic: ClassicPDFTemplate,
+  modern: ModernPDFTemplate,
+  minimal: MinimalPDFTemplate,
+};
 
 let fontsRegistered = false;
 
-async function loadPDFTemplate(template) {
+async function ensureFonts() {
   if (!fontsRegistered) {
     const { registerFonts } = await import('./fonts.js');
     registerFonts();
     fontsRegistered = true;
-  }
-
-  switch (template) {
-    case 'classic': {
-      const { ClassicPDFTemplate } = await import('./templates/ClassicPDFTemplate.jsx');
-      return ClassicPDFTemplate;
-    }
-    case 'minimal': {
-      const { MinimalPDFTemplate } = await import('./templates/MinimalPDFTemplate.jsx');
-      return MinimalPDFTemplate;
-    }
-    default: {
-      const { ModernPDFTemplate } = await import('./templates/ModernPDFTemplate.jsx');
-      return ModernPDFTemplate;
-    }
   }
 }
 
@@ -35,12 +29,11 @@ export function PDFDownloadButton({ personalInfo, sections, template, accentColo
   async function handleDownload() {
     setLoading(true);
     try {
-      const [{ pdf }, PDFTemplate] = await Promise.all([
-        import('@react-pdf/renderer'),
-        loadPDFTemplate(template),
-      ]);
-
+      await ensureFonts();
+      const { pdf } = await import('@react-pdf/renderer');
       const { createElement } = await import('react');
+
+      const PDFTemplate = TEMPLATES[template] ?? ModernPDFTemplate;
       const blob = await pdf(
         createElement(PDFTemplate, { personalInfo, sections, accentColor })
       ).toBlob();
@@ -56,7 +49,6 @@ export function PDFDownloadButton({ personalInfo, sections, template, accentColo
       setTimeout(() => URL.revokeObjectURL(url), 100);
       toast('PDF downloaded successfully');
     } catch (err) {
-      // Reset so the next attempt will re-register fonts
       fontsRegistered = false;
       console.error('PDF generation failed:', err);
       toast(err.message || 'PDF generation failed', 'error');
